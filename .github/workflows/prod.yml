@@ -2,7 +2,7 @@ name: Node.js CI
 
 on:
   push:
-    tags: [*]
+    tags: [ v1.* ]
 
 jobs:
   build:
