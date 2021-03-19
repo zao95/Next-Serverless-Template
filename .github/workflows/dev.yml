@@ -1,26 +1,29 @@
 name: Node.js CI
 
 on:
-    pull_request:
-        branches: ['dev']
+  pull_request:
+    branches: [ dev ]
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                node-version: [12.x]
-        steps:
-        - uses: actions/checkout@v2
-        - name: Use Node.js ${{ matrix.node-version }}
-            uses: actions/setup-node@v1
-            with:
-                node-version: ${{ matrix.node-version }}
-        - run: export AWS_ACCESS_KEY_ID=${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-        - run: export AWS_SECRET_ACCESS_KEY=${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-        - run: export DISTRIBUTION_ID=${{ secrets.DEV_DISTRIBUTION_ID }}
-        - run: export S3_BUCKET=${{ secrets.DEV_S3_BUCKET }}
-        - run: npm install
-        - run: npm run deploy
-        env:
-            CI: true
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: export AWS_ACCESS_KEY_ID=${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+    - run: export AWS_SECRET_ACCESS_KEY=${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+    - run: export DISTRIBUTION_ID=${{ secrets.DEV_DISTRIBUTION_ID }}
+    - run: export S3_BUCKET=${{ secrets.DEV_S3_BUCKET }}
+    - run: npm install
+    - run: npm run deploy
+    env:
+      CI: true
