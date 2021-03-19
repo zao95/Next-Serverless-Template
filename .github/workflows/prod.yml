@@ -19,13 +19,11 @@ jobs:
             uses: actions/setup-node@v1
             with:
                 node-version: ${{ matrix.node-version }}
-
         - run: export AWS_ACCESS_KEY_ID=${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
         - run: export AWS_SECRET_ACCESS_KEY=${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
         - run: export DISTRIBUTION_ID=${{ secrets.PROD_DISTRIBUTION_ID }}
         - run: export S3_BUCKET=${{ secrets.PROD_S3_BUCKET }}
         - run: npm install
         - run: npm run deploy
-
         env:
             CI: true
