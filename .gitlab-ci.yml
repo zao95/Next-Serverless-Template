@@ -13,6 +13,7 @@ deploy-dev:
         - export AWS_SECRET_ACCESS_KEY=$DEV_AWS_SECRET_ACCESS_KEY
         - export DISTRIBUTION_ID=$DEV_DISTRIBUTION_ID
         - export S3_BUCKET=$DEV_S3_BUCKET
+        - export APP_ENV=development
         - npm install
         - npm run deploy
     only:
@@ -25,6 +26,7 @@ deploy-prod:
         - export AWS_SECRET_ACCESS_KEY=$PROD_AWS_SECRET_ACCESS_KEY
         - export DISTRIBUTION_ID=$PROD_DISTRIBUTION_ID
         - export S3_BUCKET=$PROD_S3_BUCKET
+        - export APP_ENV=production
         - npm install
         - npm run deploy
     only:

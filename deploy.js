@@ -15,8 +15,7 @@ const bucketParams = {
     Bucket: process.env.S3_BUCKET,
 }
 
-const createClient = async () => {
-    console.log('createClient Start')
+const createClient = async (loadProcess) => {
     const s3 = new S3Client({
         region: REGION,
         credentials: {
@@ -31,12 +30,10 @@ const createClient = async () => {
             secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY.replace(" ", ""),
         }
     })
-    console.log('createClient Complete')
     return [s3, cf]
 }
 
 const s3ListRead = async (s3) => {
-    console.log('s3ListRead Start')
     try {
         const s3ObjectList = []
         const data = await s3.send(new ListObjectsCommand(bucketParams))
@@ -45,7 +42,6 @@ const s3ListRead = async (s3) => {
                 s3ObjectList.push(i.Key)
             }
         }
-        console.log('s3ListRead Complete')
         return s3ObjectList
     } catch (e) {
         console.log(e)
@@ -53,7 +49,6 @@ const s3ListRead = async (s3) => {
 }
 
 const s3Delete = async (s3, files) => {
-    console.log('s3Delete Start')
     const deleteParams = {
         ...bucketParams,
         Delete: { Objects: [] }
@@ -66,11 +61,9 @@ const s3Delete = async (s3, files) => {
     } catch (err) {
         console.log('Error', err)
     }
-    console.log('s3Delete Complete')
 }
 
 const s3Upload = async (s3) => {
-    console.log('s3Upload Start')
     const files = glob.sync(`./out/**/*.*`)
     for (let file of files) {
         const uploadParams = { ...bucketParams }
@@ -91,11 +84,9 @@ const s3Upload = async (s3) => {
             console.log('Error', err)
         }
     }
-    console.log('s3Upload Complete')
 }
 
 const cfInvalidation = async (cf) => {
-    console.log('cfInvalidation Start')
     await cf.send(new CreateInvalidationCommand({
         DistributionId,
         InvalidationBatch: {
@@ -108,18 +99,42 @@ const cfInvalidation = async (cf) => {
             },
         }
     }))
-    console.log('cfInvalidation Complete')
+}
+
+const timer = () => {
+    const timer = setInterval(() => {
+        process.stdout.write('.')
+    }, 100)
+    const clearTimer = () => {
+        clearInterval(timer)
+    }
+    return clearTimer
+}
+
+const loadProcess = async (name, func, params = []) => {
+    const time = timer()
+    process.stdout.write(`${name} start...`)
+    try {
+        const result = await func(...params)
+        process.stdout.write(`complete\n`)
+        return result
+    } catch (e) {
+        process.stdout.write(`error\n`)
+        throw Error(e)
+    } finally {
+        time()
+    }
 }
 
 const deploy = async () => {
     try {
-        const [s3, cf] = await createClient()
-        const s3List = await s3ListRead(s3)
-        s3List?.Contents?.length && await s3Delete(s3, s3List)
-        await s3Upload(s3)
-        await cfInvalidation(cf)
+        const [s3, cf] = await loadProcess('createClient', createClient)
+        const s3List = await loadProcess('s3ListRead', s3ListRead, [s3])
+        s3List?.Contents?.length && await loadProcess('s3Delete', s3Delete, [s3, s3List])
+        await loadProcess('s3Upload', s3Upload, [s3])
+        await loadProcess('cfInvalidation', cfInvalidation, [cf])
     } catch (e) {
-        console.log(e)
+        process.stdout.write(e)
         throw new Error(e)
     }
 }
