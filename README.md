@@ -17,14 +17,23 @@ AWS Serverless service for NextJS
 ## Usage
 
 1.  Set up aws s3 and cloudfront.
+    ⚠ You need certification in ACM and record in ROUTE53 for Domain Service
 2.  Create aws iam user for edit s3 and cloudfront invalidation.
-3.  Set the ci/cd variable in gitlab or github.
+3.  Make branch named master and dev.
+    ⚠ If want to change branch name you change branch name in cicd code.
+4.  Set the CI/CD variable in gitlab or github.
     -   DEV_AWS_ACCESS_KEY_ID
     -   DEV_AWS_SECRET_ACCESS_KEY
-    -   DEV_DISTRIBUTION_ID
-    -   DEV_S3_BUCKET
+    -   DEV_APP_DISTRIBUTION_ID
+    -   DEV_APP_S3_BUCKET
+    -   DEV_STORYBOOK_DISTRIBUTION_ID
+    -   DEV_STORYBOOK_S3_BUCKET
     -   PROD_AWS_ACCESS_KEY_ID
     -   PROD_AWS_SECRET_ACCESS_KEY
-    -   PROD_DISTRIBUTION_ID
-    -   PROD_S3_BUCKET
-4.  Now, if you ask the dev branch for merge request / pull request, it is deployed as dev, and if you create a new tag, it is deployed as prod.
+    -   PROD_APP_DISTRIBUTION_ID
+    -   PROD_APP_S3_BUCKET
+    -   PROD_STORYBOOK_DISTRIBUTION_ID
+    -   PROD_STORYBOOK_S3_BUCKET
+    ⚠ Gitlab Issue
+    If CI/CD variable set only protected branchs, you must registry dev branch to protected branch on repository setting.
+5.  Now, if you ask the dev branch for merge request / pull request, it is deployed as dev, and if you create a new tag, it is deployed as prod.
