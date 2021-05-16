@@ -169,8 +169,8 @@ const deploy = async () => {
         // await loadProcess('s3Delete', s3Delete, [s3, s3List])
         await loadProcess('s3AppUpload', s3AppUpload, [s3])
         await loadProcess('cfAppInvalidation', cfAppInvalidation, [cf])
-        await loadProcess('s3StorybookUpload', s3StorybookUpload, [s3])
-        await loadProcess('cfStorybookInvalidation', cfStorybookInvalidation, [cf])
+        // await loadProcess('s3StorybookUpload', s3StorybookUpload, [s3])
+        // await loadProcess('cfStorybookInvalidation', cfStorybookInvalidation, [cf])
     } catch (e) {
         process.stdout.write(e)
         throw new Error(e)
