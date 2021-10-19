@@ -7,8 +7,9 @@
         "dev": "cross-env APP_ENV=local next dev",
         "start": "next start",
         "export": "next build && next export",
-        "dev-deploy": "npm run export && build-storybook && cross-env APP_ENV=development node deploy.js",
-        "prod-deploy": "npm run export && build-storybook && cross-env APP_ENV=production node deploy.js"
+        "deploy": "npm run export && node deploy.js",
+        "dev-deploy": "npm run export && cross-env APP_ENV=development node deploy.js",
+        "prod-deploy": "npm run export && cross-env APP_ENV=production node deploy.js"
     },
     "author": "Howser",
     "repository": {
