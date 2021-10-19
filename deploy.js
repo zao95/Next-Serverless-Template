@@ -149,89 +149,6 @@ const cfAppInvalidation = async (cf) => {
     }
 }
 
-const s3StorybookListRead = async (s3) => {
-    try {
-        const s3ObjectList = []
-        const data = await s3.send(new ListObjectsCommand(storybookBucket))
-        if (data.Contents) {
-            for (let i of data.Contents) {
-                i.Key.slice(0, i.Key.indexOf('/')) === storybookUrl &&
-                    s3ObjectList.push(i.Key)
-            }
-        }
-        return s3ObjectList
-    } catch (e) {
-        throw new Error(e)
-    }
-}
-
-const s3StorybookDelete = async (s3, files) => {
-    try {
-        const deleteParams = {
-            ...storybookBucket,
-            Delete: { Objects: [] },
-        }
-        for (let file of files) {
-            deleteParams.Delete.Objects.push({ Key: file })
-        }
-        await s3.send(new DeleteObjectsCommand(deleteParams))
-    } catch (e) {
-        throw new Error(e)
-    }
-}
-
-const s3StorybookUpload = async (s3) => {
-    try {
-        const files = glob.sync(`./storybook-static/**/*.*`)
-        for (let file of files) {
-            const uploadParams = { ...storybookBucket }
-            const body = fs.readFileSync(file)
-            uploadParams['Key'] = file.replace(
-                './storybook-static/',
-                `${storybookUrl}/`
-            )
-            uploadParams['Body'] = body
-            uploadParams['CacheControl'] = 'max-age=604800,public'
-            if (file.match(/\.html$/)) {
-                uploadParams['ContentType'] = 'text/html'
-                uploadParams['CacheControl'] =
-                    'no-cache, no-store, must-revalidate'
-                if (file.match(/index\.html$/)) {
-                    uploadParams['Key'] = uploadParams['Key'].replace(
-                        'index.html',
-                        'storybook'
-                    )
-                } else if (file.match(/iframe\.html$/)) {
-                    uploadParams['ContentDisposition'] = 'inline'
-                }
-            }
-
-            await s3.send(new PutObjectCommand(uploadParams))
-        }
-    } catch (e) {
-        throw new Error(e)
-    }
-}
-
-const cfStorybookInvalidation = async (cf) => {
-    try {
-        await cf.send(
-            new CreateInvalidationCommand({
-                DistributionId: storybookDistributionId,
-                InvalidationBatch: {
-                    CallerReference: String(md5(new Date().toString())),
-                    Paths: {
-                        Items: ['/*'],
-                        Quantity: 1,
-                    },
-                },
-            })
-        )
-    } catch (e) {
-        throw new Error(e)
-    }
-}
-
 const timer = () => {
     const timer = setInterval(() => {
         process.stdout.write('.')
@@ -272,23 +189,6 @@ const deploy = async () => {
         // App deploy
         await loadProcess('s3AppUpload', s3AppUpload, [s3])
         await loadProcess('cfAppInvalidation', cfAppInvalidation, [cf])
-
-        // Storybook S3 reset
-        // const s3StorybookObjectList = await loadProcess(
-        //     's3StorybookListRead',
-        //     s3StorybookListRead,
-        //     [s3]
-        // )
-        // await loadProcess('s3StorybookDelete', s3StorybookDelete, [
-        //     s3,
-        //     s3StorybookObjectList,
-        // ])
-
-        // Storybook deploy
-        await loadProcess('s3StorybookUpload', s3StorybookUpload, [s3])
-        await loadProcess('cfStorybookInvalidation', cfStorybookInvalidation, [
-            cf,
-        ])
     } catch (e) {
         process.stdout.write(e)
         process.exit(1)
