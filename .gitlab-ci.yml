@@ -9,6 +9,5 @@ build-test:
     script:
         - npm install
         - npm run export
-        - npm run build-storybook
     only:
         - merge_requests
