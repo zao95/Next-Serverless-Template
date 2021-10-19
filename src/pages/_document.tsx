@@ -36,12 +36,28 @@ export default class MyDocument extends Document {
     }
     render() {
         return (
-            <Html>
+            <Html lang="ko">
                 <Head>
-                    <link rel="preconnect" href="https://fonts.gstatic.com" />
+                    <meta charSet="UTF-8" />
+                    <meta name="robots" content="noindex" />
+                    <meta property="og:title" content="타이틀" />
+                    <meta property="og:type" content="website" />
+                    <meta
+                        property="og:url"
+                        content="웹사이트 url"
+                    />
+                    <meta
+                        property="og:image"
+                        content="이미지 링크"
+                    />
+                    <meta
+                        property="og:description"
+                        content="설명"
+                    />
                     <link
-                        href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Noto+Sans:wght@400;700&display=swap"
-                        rel="stylesheet"
+                        rel="shortcut icon"
+                        type="image/x-icon"
+                        href="파비콘 경로"
                     />
                 </Head>
                 <body>

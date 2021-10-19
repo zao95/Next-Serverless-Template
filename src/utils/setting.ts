@@ -1,5 +1,5 @@
-const Setting = {
-    title: '타이틀',
+const setting = {
+    title: '웹사이트 제목'
 }
 
-export default Setting
+export default setting
