@@ -1,6 +1,6 @@
 # Next-Serverless-Template
 
-AWS Serverless service for NextJS
+NextJS frontend template for aws serverless service
 
 ## Feature
 
