@@ -1,7 +1,7 @@
 {
-    "name": "app-react-frontend",
+    "name": "next-serverless-template",
     "version": "1.0.0",
-    "description": "Frontend repository for app.howser.co.kr of Howser.",
+    "description": "NextJS frontend template for aws serverless service",
     "scripts": {
         "build": "next build",
         "dev": "cross-env APP_ENV=local next dev",
@@ -11,11 +11,12 @@
         "dev-deploy": "npm run export && cross-env APP_ENV=development node deploy.js",
         "prod-deploy": "npm run export && cross-env APP_ENV=production node deploy.js"
     },
-    "author": "Howser",
+    "author": "Lee Jeong-Woo",
     "repository": {
         "type": "git",
-        "url": "https://gitlab.com/dev-howser/app-react-frontend"
+        "url": "https://github.com/zao95/Next-Serverless-Template"
     },
+    "license": "MIT",
     "dependencies": {
         "@reduxjs/toolkit": "^1.6.2",
         "axios": "^0.23.0",
